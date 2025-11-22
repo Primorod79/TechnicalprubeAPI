@@ -8,7 +8,7 @@ Complete backend API for an e-commerce system providing user management, product
 
 **Live API:** https://technicalprubeapi-production.up.railway.app
 
-**Swagger Documentation:** https://technicalprubeapi-production.up.railway.app/
+**Swagger Documentation:** https://technicalprubeapi-production.up.railway.app/swagger
 
 ## 🏗️ Tech Stack
 
