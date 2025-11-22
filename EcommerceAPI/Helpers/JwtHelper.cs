@@ -26,8 +26,11 @@ namespace EcommerceAPI.Helpers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(expiry),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                NotBefore = DateTime.UtcNow,
+                Expires = DateTime.UtcNow.AddMinutes(expiry == 0 ? 60 : expiry),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = jwtSection.GetValue<string>("Issuer"),
+                Audience = jwtSection.GetValue<string>("Audience")
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
