@@ -189,12 +189,14 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<EcommerceAPI.Middleware.ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
-// Enable Swagger UI in all environments for easier access (route: /swagger)
+app.UseSerilogRequestLogging();
+
+// Enable Swagger UI in all environments for easier access
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommerce API v1");
-    c.RoutePrefix = "swagger"; // UI available at /swagger
+    c.RoutePrefix = string.Empty; // UI available at root /
 });
 
 if (app.Environment.IsDevelopment())
@@ -202,9 +204,7 @@ if (app.Environment.IsDevelopment())
     // Additional development-only setup could go here
 }
 
-app.UseSerilogRequestLogging();
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+// Middleware order is important
 app.UseRouting();
 app.UseCors("AllowAngular");
 app.UseAuthentication();
