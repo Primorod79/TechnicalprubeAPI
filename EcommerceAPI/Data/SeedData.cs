@@ -6,6 +6,35 @@ namespace EcommerceAPI.Data
     {
         public static async Task InitializeAsync(ApplicationDbContext context)
         {
+            // Update existing products with image URLs if they don't have them
+            var productsToUpdate = context.Products.Where(p => string.IsNullOrEmpty(p.ImageUrl)).ToList();
+            if (productsToUpdate.Any())
+            {
+                var imageUrls = new Dictionary<string, string>
+                {
+                    ["Smartphone X"] = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
+                    ["Laptop Pro"] = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400",
+                    ["Camisa Casual"] = "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400",
+                    ["Pantalon Jeans"] = "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
+                    ["Cereal Mix"] = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400",
+                    ["Aspiradora Smart"] = "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=400",
+                    ["Balon de Futbol"] = "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400",
+                    ["El Principito"] = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+                    ["LEGO City"] = "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400",
+                    ["Perfume Elegance"] = "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400"
+                };
+
+                foreach (var product in productsToUpdate)
+                {
+                    if (imageUrls.TryGetValue(product.Name, out var imageUrl))
+                    {
+                        product.ImageUrl = imageUrl;
+                        product.UpdatedAt = DateTime.UtcNow;
+                    }
+                }
+                await context.SaveChangesAsync();
+            }
+
             if (context.Users.Any() || context.Categories.Any() || context.Products.Any())
                 return;
 
