@@ -141,14 +141,32 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Seed data
+// Seed data and ensure database is created/migrated on startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.EnsureCreated();
+        try
+        {
+            // Try to apply migrations (preferred for production)
+            context.Database.Migrate();
+        }
+        catch (Exception migrateEx)
+        {
+            // If migrations are not present or migration fails, fallback to EnsureCreated
+            Log.Warning(migrateEx, "Migrate failed, falling back to EnsureCreated.");
+            try
+            {
+                context.Database.EnsureCreated();
+            }
+            catch (Exception ensureEx)
+            {
+                Log.Warning(ensureEx, "EnsureCreated also failed.");
+            }
+        }
+
         await SeedData.InitializeAsync(context);
     }
     catch (Exception ex)
