@@ -206,7 +206,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommerce API v1");
-    c.RoutePrefix = string.Empty; // UI available at root /
+    c.RoutePrefix = "swagger"; // UI available at /swagger
 });
 
 if (app.Environment.IsDevelopment())
