@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using EcommerceAPI.Helpers;
 
 namespace EcommerceAPI.Controllers
 {
@@ -19,7 +20,7 @@ namespace EcommerceAPI.Controllers
         public async Task<IActionResult> Upload([FromForm] IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest(new { message = "No file uploaded" });
+                return BadRequest(ApiResponse<object>.Failure("No file uploaded", null, 400));
 
             var uploads = Path.Combine(_env.WebRootPath ?? "wwwroot", "images");
             if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
@@ -31,7 +32,7 @@ namespace EcommerceAPI.Controllers
             await file.CopyToAsync(stream);
 
             var url = $"/images/{fileName}";
-            return Ok(new { url });
+            return Ok(ApiResponse<object>.SuccessResponse(new { url }));
         }
     }
 }

@@ -1,5 +1,6 @@
 using EcommerceAPI.Core.Interfaces;
 using EcommerceAPI.Data;
+using EcommerceAPI.Helpers;
 using EcommerceAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,19 +28,32 @@ namespace EcommerceAPI.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllAsync(int page, int pageSize, string? search, int? categoryId)
+        public async Task<PaginatedResult<Product>> GetAllAsync(int page, int pageSize, string? search, int? categoryId)
+        {
+            var query = _context.Products.Include(p => p.Category).AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(p => EF.Functions.ILike(p.Name, $"%{search}%") || EF.Functions.ILike(p.Description, $"%{search}%"));
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            var total = await query.CountAsync();
+            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedResult<Product>(items, total, page, pageSize);
+        }
+
+        public async Task<Product?> GetByIdAsync(int id)
+        {
+            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<int> CountAsync(string? search, int? categoryId)
         {
             var query = _context.Products.AsQueryable();
             if (!string.IsNullOrEmpty(search))
                 query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
             if (categoryId.HasValue)
                 query = query.Where(p => p.CategoryId == categoryId.Value);
-            return await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-        }
-
-        public async Task<Product?> GetByIdAsync(int id)
-        {
-            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
+            return await query.CountAsync();
         }
 
         public async Task UpdateAsync(Product product)

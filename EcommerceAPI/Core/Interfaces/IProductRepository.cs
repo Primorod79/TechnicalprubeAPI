@@ -1,13 +1,15 @@
+using EcommerceAPI.Helpers;
 using EcommerceAPI.Models;
 
 namespace EcommerceAPI.Core.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync(int page, int pageSize, string? search, int? categoryId);
+        Task<PaginatedResult<Product>> GetAllAsync(int page, int pageSize, string? search, int? categoryId);
         Task<Product?> GetByIdAsync(int id);
         Task<Product> AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(Product product);
+        Task<int> CountAsync(string? search, int? categoryId);
     }
 }

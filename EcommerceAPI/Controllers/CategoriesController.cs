@@ -1,4 +1,6 @@
 using EcommerceAPI.Core.Interfaces;
+using EcommerceAPI.DTOs.Categories;
+using EcommerceAPI.Helpers;
 using EcommerceAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,38 +23,43 @@ namespace EcommerceAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var categories = await _repo.GetAllAsync();
-            return Ok(categories);
+            return Ok(ApiResponse<IEnumerable<Category>>.SuccessResponse(categories));
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var category = await _repo.GetByIdAsync(id);
-            if (category == null) return NotFound();
-            return Ok(category);
+            if (category == null) return NotFound(ApiResponse<object>.Failure("Category not found", null, 404));
+            return Ok(ApiResponse<Category>.SuccessResponse(category));
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([FromBody] Category category)
+        public async Task<IActionResult> Create([FromBody] CreateCategoryRequest request)
         {
-            category.CreatedAt = DateTime.UtcNow;
-            category.UpdatedAt = DateTime.UtcNow;
+            var category = new Category
+            {
+                Name = request.Name,
+                Description = request.Description,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
             var created = await _repo.AddAsync(category);
-            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+            return CreatedAtAction(nameof(Get), new { id = created.Id }, ApiResponse<Category>.SuccessResponse(created));
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Update(int id, [FromBody] Category category)
+        public async Task<IActionResult> Update(int id, [FromBody] CreateCategoryRequest request)
         {
             var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return NotFound();
-            existing.Name = category.Name;
-            existing.Description = category.Description;
+            if (existing == null) return NotFound(ApiResponse<object>.Failure("Category not found", null, 404));
+            existing.Name = request.Name;
+            existing.Description = request.Description;
             existing.UpdatedAt = DateTime.UtcNow;
             await _repo.UpdateAsync(existing);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse(new { message = "Updated" }));
         }
 
         [HttpDelete("{id}")]
@@ -60,9 +67,9 @@ namespace EcommerceAPI.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var existing = await _repo.GetByIdAsync(id);
-            if (existing == null) return NotFound();
+            if (existing == null) return NotFound(ApiResponse<object>.Failure("Category not found", null, 404));
             await _repo.DeleteAsync(existing);
-            return NoContent();
+            return Ok(ApiResponse<object>.SuccessResponse(new { message = "Deleted" }));
         }
     }
 }

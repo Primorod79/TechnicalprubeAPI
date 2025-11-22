@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using EcommerceAPI.DTOs.Auth;
+using EcommerceAPI.Helpers;
 using EcommerceAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +28,9 @@ namespace EcommerceAPI.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (_context.Users.Any(u => u.Email == request.Email))
-                return BadRequest(new { message = "Email already in use" });
+                return BadRequest(ApiResponse<object>.Failure("Email already in use", new { email = new[] { "Email already in use" } }, 400));
             if (_context.Users.Any(u => u.Username == request.Username))
-                return BadRequest(new { message = "Username already in use" });
+                return BadRequest(ApiResponse<object>.Failure("Username already in use", new { username = new[] { "Username already in use" } }, 400));
 
             var user = new User
             {
@@ -44,7 +45,7 @@ namespace EcommerceAPI.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Registered" });
+            return Ok(ApiResponse<object>.SuccessResponse(new { message = "Registered" }));
         }
 
         [HttpPost("login")]
@@ -52,10 +53,10 @@ namespace EcommerceAPI.Controllers
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                return Unauthorized(new { message = "Invalid credentials" });
+                return Unauthorized(ApiResponse<object>.Failure("Invalid credentials", null, 401));
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
+            var token = Helpers.JwtHelper.GenerateToken(user, _config);
+            return Ok(ApiResponse<object>.SuccessResponse(new { token }));
         }
 
         [HttpGet("me")]
@@ -64,34 +65,8 @@ namespace EcommerceAPI.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = _context.Users.FirstOrDefault(u => u.Id.ToString() == userId);
-            if (user == null) return NotFound();
-            return Ok(new { user.Id, user.Email, user.Username, user.Role });
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var jwtSection = _config.GetSection("JwtSettings");
-            var secret = jwtSection.GetValue<string>("Secret");
-            var expiry = jwtSection.GetValue<int>("ExpiryMinutes");
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
-            };
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(expiry),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            if (user == null) return NotFound(ApiResponse<object>.Failure("User not found", null, 404));
+            return Ok(ApiResponse<object>.SuccessResponse(new { user.Id, user.Email, user.Username, user.Role }));
         }
     }
 }

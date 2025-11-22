@@ -55,8 +55,10 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidIssuer = jwtSection.GetValue<string>("Issuer"),
+        ValidateAudience = true,
+        ValidAudience = jwtSection.GetValue<string>("Audience"),
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -68,8 +70,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod();
     });
 });
 
