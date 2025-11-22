@@ -31,19 +31,29 @@ namespace EcommerceAPI.Data
 
             context.Users.AddRange(admin, user);
 
-            var cat1 = new Category { Name = "Electr髇ica", Description = "Electr髇icos y gadgets", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat1 = new Category { Name = "Electr贸nica", Description = "Electr贸nicos y gadgets", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
             var cat2 = new Category { Name = "Ropa", Description = "Prendas de vestir", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
             var cat3 = new Category { Name = "Alimentos", Description = "Comestibles", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat4 = new Category { Name = "Hogar", Description = "Art铆culos para el hogar", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat5 = new Category { Name = "Deportes", Description = "Art铆culos deportivos", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat6 = new Category { Name = "Libros", Description = "Libros y revistas", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat7 = new Category { Name = "Juguetes", Description = "Juguetes para ni帽os", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
+            var cat8 = new Category { Name = "Belleza", Description = "Productos de belleza", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow };
 
-            context.Categories.AddRange(cat1, cat2, cat3);
+            context.Categories.AddRange(cat1, cat2, cat3, cat4, cat5, cat6, cat7, cat8);
 
             var products = new List<Product>
             {
-                new Product { Name = "Smartphone X", Description = "Tel閒ono inteligente de ejemplo", Price = 499.99m, Stock = 50, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Laptop Pro", Description = "Port醫il potente", Price = 1299.99m, Stock = 20, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Camisa Casual", Description = "Camisa de algod髇", Price = 29.99m, Stock = 100, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Pantal髇 Jeans", Description = "Jeans azules", Price = 49.99m, Stock = 80, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Cereal Mix", Description = "Caja de cereal", Price = 4.99m, Stock = 200, Category = cat3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Product { Name = "Smartphone X", Description = "Tel茅fono inteligente de ejemplo", Price = 499.99m, Stock = 50, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Laptop Pro", Description = "Port谩til potente", Price = 1299.99m, Stock = 20, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Camisa Casual", Description = "Camisa de algod贸n", Price = 29.99m, Stock = 100, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Pantal贸n Jeans", Description = "Jeans azules", Price = 49.99m, Stock = 80, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Cereal Mix", Description = "Caja de cereal", Price = 4.99m, Stock = 200, Category = cat3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Aspiradora Smart", Description = "Aspiradora inteligente", Price = 249.99m, Stock = 15, Category = cat4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Bal贸n de F煤tbol", Description = "Bal贸n profesional", Price = 34.99m, Stock = 60, Category = cat5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "El Principito", Description = "Libro cl谩sico", Price = 12.99m, Stock = 150, Category = cat6, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "LEGO City", Description = "Set de construcci贸n", Price = 79.99m, Stock = 40, Category = cat7, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Perfume Elegance", Description = "Fragancia premium", Price = 89.99m, Stock = 35, Category = cat8, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
             };
 
             context.Products.AddRange(products);
