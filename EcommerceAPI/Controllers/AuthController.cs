@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
+using EcommerceAPI.Data;
 using EcommerceAPI.DTOs.Auth;
 using EcommerceAPI.Helpers;
 using EcommerceAPI.Models;

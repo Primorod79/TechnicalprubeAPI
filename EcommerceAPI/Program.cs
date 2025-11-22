@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using FluentValidation.AspNetCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +24,38 @@ builder.Host.UseSerilog();
 // Add services to the container.
 builder.Services.AddControllers();
 
+// Build connection string (prefer environment variables from Railway)
+string? databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
+                      ?? Environment.GetEnvironmentVariable("DATABASE_PUBLIC_URL")
+                      ?? builder.Configuration["DATABASE_URL"]
+                      ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+string connectionString;
+if (!string.IsNullOrEmpty(databaseUrl) && (databaseUrl.StartsWith("postgres://") || databaseUrl.StartsWith("postgresql://")))
+{
+    // DATABASE_URL format: postgres://user:password@host:port/dbname
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var builderCsb = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port > 0 ? uri.Port : 5432,
+        Username = userInfo.Length > 0 ? userInfo[0] : string.Empty,
+        Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
+        Database = uri.AbsolutePath.TrimStart('/'),
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+    connectionString = builderCsb.ToString();
+}
+else
+{
+    connectionString = databaseUrl ?? builder.Configuration.GetConnectionString("DefaultConnection");
+}
+
 // DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Repositories
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -39,7 +70,7 @@ builder.Services.AddFluentValidationAutoValidation()
 
 // JWT Authentication
 var jwtSection = builder.Configuration.GetSection("JwtSettings");
-var secret = jwtSection.GetValue<string>("Secret");
+var secret = jwtSection.GetValue<string>("Secret") ?? string.Empty;
 var key = Encoding.ASCII.GetBytes(secret);
 
 builder.Services.AddAuthentication(options =>
@@ -122,7 +153,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Log.Fatal(ex, "An error occurred seeding the DB.");
+        Log.Warning(ex, "Seeding DB failed (will continue) — check DATABASE_URL and connectivity.");
     }
 }
 
