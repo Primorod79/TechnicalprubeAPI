@@ -99,9 +99,19 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        var allowedOrigins = new List<string> { "http://localhost:4200" };
+        
+        // Add production frontend URL from environment variable
+        var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
+        if (!string.IsNullOrEmpty(frontendUrl))
+        {
+            allowedOrigins.Add(frontendUrl);
+        }
+        
+        policy.WithOrigins(allowedOrigins.ToArray())
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -171,7 +181,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        Log.Warning(ex, "Seeding DB failed (will continue) — check DATABASE_URL and connectivity.");
+        Log.Warning(ex, "Seeding DB failed (will continue) ï¿½ check DATABASE_URL and connectivity.");
     }
 }
 
