@@ -44,16 +44,16 @@ namespace EcommerceAPI.Data
 
             var products = new List<Product>
             {
-                new Product { Name = "Smartphone X", Description = "Teléfono inteligente de ejemplo", Price = 499.99m, Stock = 50, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Laptop Pro", Description = "Portátil potente", Price = 1299.99m, Stock = 20, Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Camisa Casual", Description = "Camisa de algodón", Price = 29.99m, Stock = 100, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Pantalón Jeans", Description = "Jeans azules", Price = 49.99m, Stock = 80, Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Cereal Mix", Description = "Caja de cereal", Price = 4.99m, Stock = 200, Category = cat3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Aspiradora Smart", Description = "Aspiradora inteligente", Price = 249.99m, Stock = 15, Category = cat4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Balón de Fútbol", Description = "Balón profesional", Price = 34.99m, Stock = 60, Category = cat5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "El Principito", Description = "Libro clásico", Price = 12.99m, Stock = 150, Category = cat6, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "LEGO City", Description = "Set de construcción", Price = 79.99m, Stock = 40, Category = cat7, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Product { Name = "Perfume Elegance", Description = "Fragancia premium", Price = 89.99m, Stock = 35, Category = cat8, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Product { Name = "Smartphone X", Description = "Teléfono inteligente de ejemplo", Price = 499.99m, Stock = 50, ImageUrl = "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400", Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Laptop Pro", Description = "Portátil potente", Price = 1299.99m, Stock = 20, ImageUrl = "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400", Category = cat1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Camisa Casual", Description = "Camisa de algodón", Price = 29.99m, Stock = 100, ImageUrl = "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400", Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Pantalón Jeans", Description = "Jeans azules", Price = 49.99m, Stock = 80, ImageUrl = "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400", Category = cat2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Cereal Mix", Description = "Caja de cereal", Price = 4.99m, Stock = 200, ImageUrl = "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=400", Category = cat3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Aspiradora Smart", Description = "Aspiradora inteligente", Price = 249.99m, Stock = 15, ImageUrl = "https://images.unsplash.com/photo-1558317374-067fb5f30001?w=400", Category = cat4, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Balón de Fútbol", Description = "Balón profesional", Price = 34.99m, Stock = 60, ImageUrl = "https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400", Category = cat5, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "El Principito", Description = "Libro clásico", Price = 12.99m, Stock = 150, ImageUrl = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400", Category = cat6, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "LEGO City", Description = "Set de construcción", Price = 79.99m, Stock = 40, ImageUrl = "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400", Category = cat7, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Product { Name = "Perfume Elegance", Description = "Fragancia premium", Price = 89.99m, Stock = 35, ImageUrl = "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", Category = cat8, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
             };
 
             context.Products.AddRange(products);
