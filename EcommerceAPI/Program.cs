@@ -99,9 +99,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        var allowedOrigins = new List<string> { "http://localhost:4200" };
+        var allowedOrigins = new List<string> 
+        { 
+            "http://localhost:4200",
+            "https://technicalprube-production.up.railway.app"
+        };
         
-        // Add production frontend URL from environment variable
+        // Add additional frontend URL from environment variable
         var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
         if (!string.IsNullOrEmpty(frontendUrl))
         {
@@ -209,6 +213,9 @@ app.UseRouting();
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health check endpoint
+app.MapGet("/api/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }));
 
 app.MapControllers();
 
