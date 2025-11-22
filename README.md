@@ -248,4 +248,4 @@ EcommerceAPI.Tests/     # Unit test project
 
 ## 📄 License
 
-This project is for educational and technical assessment purposes.
+This project is for technical assessment purposes.
