@@ -1,0 +1,57 @@
+using System.Net;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+
+namespace EcommerceAPI.Middleware
+{
+    public class ExceptionHandlingMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public ExceptionHandlingMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                await HandleExceptionAsync(context, ex);
+            }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            var code = HttpStatusCode.InternalServerError;
+            var result = new { message = "An error occurred" };
+
+            switch (exception)
+            {
+                case ValidationException ve:
+                    code = HttpStatusCode.BadRequest;
+                    result = new { message = ve.Message, errors = ve.Errors };
+                    break;
+                case KeyNotFoundException knf:
+                    code = HttpStatusCode.NotFound;
+                    result = new { message = knf.Message };
+                    break;
+                case UnauthorizedAccessException ua:
+                    code = HttpStatusCode.Unauthorized;
+                    result = new { message = ua.Message };
+                    break;
+                default:
+                    break;
+            }
+
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)code;
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(result));
+        }
+    }
+}

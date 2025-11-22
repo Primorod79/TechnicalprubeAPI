@@ -1,0 +1,80 @@
+using AutoMapper;
+using EcommerceAPI.Core.Interfaces;
+using EcommerceAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EcommerceAPI.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
+    public class ProductsController : ControllerBase
+    {
+        private readonly IProductRepository _repo;
+
+        public ProductsController(IProductRepository repo)
+        {
+            _repo = repo;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? search = null, [FromQuery] int? categoryId = null)
+        {
+            var products = await _repo.GetAllAsync(page, pageSize, search, categoryId);
+            return Ok(products);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var product = await _repo.GetByIdAsync(id);
+            if (product == null) return NotFound();
+            return Ok(product);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([FromBody] Product product)
+        {
+            product.CreatedAt = DateTime.UtcNow;
+            product.UpdatedAt = DateTime.UtcNow;
+            var created = await _repo.AddAsync(product);
+            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] Product product)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+            existing.Name = product.Name;
+            existing.Description = product.Description;
+            existing.Price = product.Price;
+            existing.Stock = product.Stock;
+            existing.ImageUrl = product.ImageUrl;
+            existing.CategoryId = product.CategoryId;
+            existing.UpdatedAt = DateTime.UtcNow;
+            await _repo.UpdateAsync(existing);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existing = await _repo.GetByIdAsync(id);
+            if (existing == null) return NotFound();
+            await _repo.DeleteAsync(existing);
+            return NoContent();
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> ByCategory(int categoryId)
+        {
+            var products = await _repo.GetAllAsync(1, 100, null, categoryId);
+            return Ok(products);
+        }
+    }
+}
