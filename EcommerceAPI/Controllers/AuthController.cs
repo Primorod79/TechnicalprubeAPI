@@ -57,7 +57,20 @@ namespace EcommerceAPI.Controllers
                 return Unauthorized(ApiResponse<object>.Failure("Invalid credentials", null, 401));
 
             var token = Helpers.JwtHelper.GenerateToken(user, _config);
-            return Ok(ApiResponse<object>.SuccessResponse(new { token }));
+            
+            var response = new 
+            { 
+                token,
+                user = new 
+                {
+                    id = user.Id,
+                    username = user.Username,
+                    email = user.Email,
+                    role = user.Role.ToString()
+                }
+            };
+            
+            return Ok(ApiResponse<object>.SuccessResponse(response));
         }
 
         [HttpGet("me")]
