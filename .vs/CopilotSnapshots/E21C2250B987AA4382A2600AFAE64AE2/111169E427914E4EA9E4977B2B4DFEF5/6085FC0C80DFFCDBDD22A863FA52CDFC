@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using AutoMapper;
 using EcommerceAPI.Data;
 using EcommerceAPI.Infrastructure.Repositories;
@@ -102,10 +102,6 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-
-    // Include XML comments (enable in csproj)
-    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();

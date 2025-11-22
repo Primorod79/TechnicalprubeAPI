@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using AutoMapper;
 using EcommerceAPI.Data;
 using EcommerceAPI.Infrastructure.Repositories;
@@ -102,29 +102,9 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
-
-    // Include XML comments (enable in csproj)
-    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();
-
-// Seed data
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.EnsureCreated();
-        await SeedData.InitializeAsync(context);
-    }
-    catch (Exception ex)
-    {
-        Log.Fatal(ex, "An error occurred seeding the DB.");
-    }
-}
 
 // Use custom exception handling middleware
 app.UseMiddleware<EcommerceAPI.Middleware.ExceptionHandlingMiddleware>();
