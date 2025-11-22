@@ -12,6 +12,7 @@ namespace EcommerceAPI.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +44,20 @@ namespace EcommerceAPI.Data
                       .WithMany(c => c.Products)
                       .HasForeignKey(e => e.CategoryId)
                       .OnDelete(DeleteBehavior.SetNull);
+                entity.HasMany(e => e.Images)
+                      .WithOne(i => i.Product)
+                      .HasForeignKey(i => i.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Image>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.FileName).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.OriginalFileName).HasMaxLength(255).IsRequired();
+                entity.Property(e => e.Url).HasMaxLength(500).IsRequired();
+                entity.Property(e => e.ContentType).HasMaxLength(100).IsRequired();
+                entity.Property(e => e.SizeInBytes).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);

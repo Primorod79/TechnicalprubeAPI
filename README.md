@@ -34,11 +34,17 @@ Complete backend API for an e-commerce system providing user management, product
 ### Product
 - Name, Description, Price, Stock, ImageUrl
 - CategoryId (FK to Category)
+- Images (collection - one-to-many)
 - Timestamps: CreatedAt, UpdatedAt
 
 ### Category
 - Name, Description
 - Products (navigation property)
+- Timestamps: CreatedAt, UpdatedAt
+
+### Image
+- FileName, OriginalFileName, Url, ContentType, SizeInBytes
+- ProductId (FK to Product, optional)
 - Timestamps: CreatedAt, UpdatedAt
 
 ## 🔌 API Endpoints
@@ -77,6 +83,16 @@ Complete backend API for an e-commerce system providing user management, product
 | POST | `/api/categories` | Create category | Yes | Admin |
 | PUT | `/api/categories/{id}` | Update category | Yes | Admin |
 | DELETE | `/api/categories/{id}` | Delete category | Yes | Admin |
+
+### Images (`/api/images`)
+
+| Method | Endpoint | Description | Auth Required | Role |
+|--------|----------|-------------|---------------|------|
+| GET | `/api/images` | List all images | Yes | Any |
+| GET | `/api/images/{id}` | Get image by ID | Yes | Any |
+| GET | `/api/images/product/{productId}` | Get images by product | Yes | Any |
+| POST | `/api/images/upload` | Upload image (file + optional productId) | Yes | Any |
+| DELETE | `/api/images/{id}` | Delete image | Yes | Admin |
 
 ### Health Check
 

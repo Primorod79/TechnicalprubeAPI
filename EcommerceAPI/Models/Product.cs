@@ -12,6 +12,7 @@ namespace EcommerceAPI.Models
         public string? ImageUrl { get; set; }
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
+        public ICollection<Image> Images { get; set; } = new List<Image>();
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
