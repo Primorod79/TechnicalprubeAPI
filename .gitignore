@@ -1,0 +1,37 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+
+# Logs
+*.log
+
+# User-specific
+*.userosscache
+*.sln.docstates
+
+# Temp
+AppData/Local/Temp/
+*.tmp
+
+# ASP.NET Core
+wwwroot/uploads/
+
+# Rider
+.idea/
+
+# Test results
+TestResults/
+
+# dotnet
+*.db
+
+# EF Migrations
+EcommerceAPI/Data/Migrations/
+
+# NPM
+node_modules/
